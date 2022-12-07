@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -l select=1:ncpus=10:mpiprocs=10:mem=10GB
-#PBS -l walltime=03:00:00
+#PBS -l walltime=06:00:00
 #PBS -q short_cpuQ
-#PBS -N nvt
-#PBS -o nvt_log_out
-#PBS -e nvt_log_err
+#PBS -N npt
+#PBS -o npt_log_out
+#PBS -e npt_log_err
 
 
 export OMP_NUM_THREADS=1
