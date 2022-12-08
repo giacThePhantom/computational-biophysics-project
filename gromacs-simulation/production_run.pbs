@@ -1,10 +1,12 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=10:mpiprocs=10:mem=10GB
+#PBS -l select=1:ncpus=64:mpiprocs=64
 #PBS -l walltime=06:00:00
 #PBS -q short_cpuQ
 #PBS -N production_run
 #PBS -o md_log_out
 #PBS -e md_log_err
+#PBS -m abe
+#PBS -M giacomo.fantoni@studenti.unitn.it
 
 
 export OMP_NUM_THREADS=1
@@ -20,13 +22,18 @@ PARAM="${INDIR}/md.mdp"
 TOPOL="${INDIR}/topol.top"
 CPT="${INDIR}/npt.cpt"
 INDEX="${INDIR}/index.ndx"
-CHECKPOINT="${OUTDIR}/state.cpt"
+CHECKPOINT="${OUTDIR}/md.cpt"
+OUTNAME="${OUTDIR}/md"
 
 module load gromacs-2021.5
 
 [ -f "${OUTDIR}/md.log" ] || gmx grompp -f $PARAM -c $INPUT -t $CPT -p $TOPOL -n $INDEX -o "${OUTDIR}/md"
 
-[ -f "${OUTDIR}/state.cpt" ] || mpirun -np 10 gmx_mpi mdrun -deffnm "${OUTDIR}/md" -cpt 15 -cpo $CHECKPOINT
+[ -f "${CHECKPOINT}" ] || mpirun -np 64 gmx_mpi mdrun -v -maxh 5.95 -deffnm $OUTNAME
+
+[ -f "${CHECKPOINT}" ] && mpirun -np 64 gmx_mpi mdrun -s $TRP -cpi $CHECKPOINT -maxh 5.95 -deffnm $OUTNAME -append
+
+
 
 mpirun -np 10 gmx_mpi mdrun -cpi $CHECKPOINT
 
