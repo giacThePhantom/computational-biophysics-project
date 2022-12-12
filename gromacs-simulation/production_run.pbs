@@ -1,13 +1,4 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=64:mpiprocs=64
-#PBS -l walltime=06:00:00
-#PBS -q short_cpuQ
-#PBS -N production_run
-#PBS -o md_log_out
-#PBS -e md_log_err
-#PBS -m abe
-#PBS -M giacomo.fantoni@studenti.unitn.it
-
 
 export OMP_NUM_THREADS=1
 cd "${HOME}/data/md_input"
