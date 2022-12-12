@@ -16,7 +16,7 @@ SECONDFLAGS="-pbc mol -center"
 
 module load gromacs-2021.5
 
-gmx trjconv -s $TPR -f $XTC -o $MIDOUTNAME $FIRSTFLAG
+gmx trjconv -s $TPR -f $XTC -o $MIDOUTNAME $FIRSTFLAGS
 gmx trjconv -s $TPR -f $MIDOUTNAME -o $OUTNAME $SECONDFLAGS
 
 module unload gromacs-2021.5
