@@ -1,16 +1,6 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=64:mpiprocs=64
-#PBS -l walltime=06:00:00
-#PBS -q short_cpuQ
-#PBS -N production_run
-#PBS -o md_log_out
-#PBS -e md_log_err
-#PBS -m abe
-#PBS -M giacomo.fantoni@studenti.unitn.it
-
 
 export OMP_NUM_THREADS=1
-cd "${HOME}/data/md_input"
 
 INDIR="${HOME}/data/post_processing_input"
 OUTDIR="${HOME}/data/post_processing_output"
@@ -19,11 +9,14 @@ mkdir -p $OUTDIR
 
 TPR="${INDIR}/md.tpr"
 XTC="${INDIR}/md.xtc"
-OUTNAME="${OUTDIR}/md_noPBC"
-FLAGS="-pbc mol -center"
+MIDOUTNAME="${OUTDIR}/md_nojump.xtc"
+OUTNAME="${OUTDIR}/md_noPBC.xtc"
+FIRSTFLAGS="-pbc nojump -center"
+SECONDFLAGS="-pbc mol -center"
 
 module load gromacs-2021.5
 
-mpirun -np 10 gmx_mpi trjconv -s $TPR -f $XTC -o md_noPBC.xtc $FLAGS
+gmx trjconv -s $TPR -f $XTC -o $MIDOUTNAME $FIRSTFLAG
+gmx trjconv -s $TPR -f $MIDOUTNAME -o $OUTNAME $FLAGS
 
 module unload gromacs-2021.5
