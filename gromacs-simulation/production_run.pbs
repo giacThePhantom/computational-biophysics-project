@@ -28,13 +28,7 @@ OUTNAME="${OUTDIR}/md"
 module load gromacs-2021.5
 
 [ -f "${OUTDIR}/md.log" ] || gmx grompp -f $PARAM -c $INPUT -t $CPT -p $TOPOL -n $INDEX -o "${OUTDIR}/md"
-
 [ -f "${CHECKPOINT}" ] || mpirun -np 64 gmx_mpi mdrun -v -maxh 5.95 -deffnm $OUTNAME
-
 [ -f "${CHECKPOINT}" ] && mpirun -np 64 gmx_mpi mdrun -s $TRP -cpi $CHECKPOINT -maxh 5.95 -deffnm $OUTNAME -append
-
-
-
-mpirun -np 10 gmx_mpi mdrun -cpi $CHECKPOINT
 
 module unload gromacs-2021.5
