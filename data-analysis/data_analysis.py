@@ -6,6 +6,9 @@ import seaborn as sns
 import math
 import sys
 import pandas as pd
+import plotly.express as px
+import MDAnalysis as mda
+from MDAnalysis.lib import distances
 
 def all_to_all_rmsd(filename, outname):
     rmsd_data = pd.read_csv(filename, sep=',', header = None)
@@ -16,6 +19,7 @@ def all_to_all_rmsd(filename, outname):
     img = plt.imshow(rmsd_map)
     res = plt.colorbar(img, cmap=plt.get_cmap('jet'));
     plt.savefig(outname)
+    plt.clf()
     return res
 
 def radius_of_gyration(filename, outname):
@@ -25,6 +29,7 @@ def radius_of_gyration(filename, outname):
     plt.ylabel("$A$",fontsize=12)
     res = plt.plot(rgyr_data[0])
     plt.savefig(outname)
+    plt.clf()
     return res
 
 def rmsf(filename, outname):
@@ -34,9 +39,14 @@ def rmsf(filename, outname):
     plt.ylabel('RMSF')
     plt.title('RMSF')
     plt.savefig(outname)
+    plt.clf()
 
-# res = all_to_all_rmsd("../../data/data-analysis/rmsd.csv")
-# plt.show(res)
-
-# res = radius_of_gyration("../../data/data-analysis/radius-of-gyration.csv")
-# plt.show(res)
+def contact_map(gro, xtc, outname, sel = "name CA"):
+    traj = mda.Universe(gro, xtc)
+    atom_selection = traj.select_atoms(sel)
+    d_atoms_sel = distances.distance_array(atom_selection.positions, atom_selection.positions)
+    plt.title("Contact map")
+    img = plt.imshow(d_atoms_sel)
+    plt.colorbar(img)
+    plt.savefig(outname)
+    plt.clf()
