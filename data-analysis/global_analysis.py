@@ -40,6 +40,14 @@ def all_to_all_rmsd(filename = ut.rmsd, outname = ut.all_to_all_rmsd, show = Fal
     res = plt.colorbar(img);
     ut.show_or_save(outname, show)
 
+def rmsd(filename = ut.rmsd, outname = ut.rmsd_single, ref = 50, show = False):
+    rmsd_data, dim = ut.read_rmsd_data(filename)
+    data = list(rmsd_data.loc[rmsd_data[0] == ref][2])
+    plt.figure()
+    plt.title("RMSD", fontsize=20)
+    img = plt.plot(data)
+    ut.show_or_save(outname, show)
+
 def radius_of_gyration(filename = ut.rgyr , outname = ut.rgyr_out, show = False):
     rgyr_data = pd.read_csv(filename, header = None)
     plt.title("$R_{g}$",fontsize=16)
@@ -54,6 +62,18 @@ def rmsf(filename = ut.rmsf, outname = ut.rmsf_out, show =False):
     plt.xlabel('Residue index')
     plt.ylabel('RMSF')
     plt.title('RMSF')
+    plt.axvspan(39, 51, color= 'r', alpha = 0.3)
+    plt.axvspan(21, 29, color= 'r', alpha = 0.3)
+    plt.axvspan(118, 119, color= 'r', alpha = 0.3)
+    plt.axvspan(141, 145, color= 'r', alpha = 0.3)
+    plt.axvspan(163, 166, color= 'r', alpha = 0.3)
+    plt.axvspan(187, 190, color= 'r', alpha = 0.3)
+    plt.axvspan(447, 451, color= 'g', alpha = 0.3)
+    plt.axvspan(469, 481, color= 'g', alpha = 0.3)
+    plt.axvspan(492, 504, color= 'g', alpha = 0.3)
+    plt.axvspan(328, 333, color= 'g', alpha = 0.3)
+    plt.axvspan(345, 356, color= 'g', alpha = 0.3)
+    plt.axvspan(391, 392, color= 'g', alpha = 0.3)
     ut.show_or_save(outname, show)
 
 def contact_map(gro = ut.gro, xtc = ut.xtc, outname = ut.contact_map_out, sel = "name CA", show = False):
