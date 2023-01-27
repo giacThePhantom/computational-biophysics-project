@@ -1,0 +1,34 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=64:mpiprocs=64
+#PBS -l walltime=06:00:00
+#PBS -q short_cpuQ
+#PBS -N md
+#PBS -o md_log_out
+#PBS -e md_log_err
+
+
+
+
+export OMP_NUM_THREADS=1
+cd "${HOME}/data/md_input"
+
+INDIR="${HOME}/data/md_input"
+OUTDIR="${HOME}/data/md_output"
+
+mkdir -p $OUTDIR
+
+INPUT="${INDIR}/npt.gro"
+PARAM="${INDIR}/md.mdp"
+TOPOL="${INDIR}/topol.top"
+CPT="${INDIR}/npt.cpt"
+INDEX="${INDIR}/index.ndx"
+CHECKPOINT="${OUTDIR}/md.cpt"
+OUTNAME="${OUTDIR}/md"
+
+module load gromacs-2021.5
+
+[ -f "${OUTDIR}/md.log" ] || gmx grompp -f $PARAM -c $INPUT -t $CPT -p $TOPOL -n $INDEX -o "${OUTDIR}/md"
+[ -f "${CHECKPOINT}" ] || mpirun -np 64 gmx_mpi mdrun -v -maxh 5.95 -deffnm $OUTNAME
+[ -f "${CHECKPOINT}" ] && mpirun -np 64 gmx_mpi mdrun -s $TRP -cpi $CHECKPOINT -maxh 5.95 -deffnm $OUTNAME -append
+
+module unload gromacs-2021.5

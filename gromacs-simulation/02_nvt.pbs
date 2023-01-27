@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=64:mpiprocs=64
+#PBS -l walltime=03:00:00
+#PBS -q short_cpuQ
+#PBS -N nvt
+#PBS -o nvt_log_out
+#PBS -e nvt_log_err
+
+
+export OMP_NUM_THREADS=1
+cd "${HOME}/data/nvt_input"
+
+INDIR="${HOME}/data/nvt_input"
+OUTDIR="${HOME}/data/nvt_output"
+
+mkdir -p $OUTDIR
+
+INPUT="${INDIR}/em.gro"
+PARAM="${INDIR}/nvt.mdp"
+TOPOL="${INDIR}/topol.top"
+INDEX="${INDIR}/index.ndx"
+
+
+module load gromacs-2021.5
+
+gmx grompp -f $PARAM -c $INPUT -r $INPUT -p $TOPOL -n $INDEX -o "${OUTDIR}/nvt"
+
+mpirun -np 10 gmx_mpi mdrun -deffnm "${OUTDIR}/nvt"
+
+module unload gromacs-2021.5
