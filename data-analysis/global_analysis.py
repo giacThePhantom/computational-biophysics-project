@@ -12,6 +12,8 @@ import MDAnalysis as mda
 from MDAnalysis.lib import distances
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import utility as ut
+import matplotlib as mpl
+import seaborn as sns
 
 def potential_during_em(filename = ut.potential , outname = ut.potential_out, show = False):
     ut.plot_xvg(filename, "Potential during energy minimization", "Time", "Potential (kJ/Mol)", "Potential energy", color = 'blue')
@@ -34,7 +36,7 @@ def all_to_all_rmsd(filename = ut.rmsd, outname = ut.all_to_all_rmsd, show = Fal
     rmsd_map = np.array(rmsd_data[2]).reshape((dim,dim))
     plt.figure()
     plt.title("RMSD heatmap", fontsize=20)
-    img = plt.imshow(rmsd_map)
+    img = plt.imshow(rmsd_map, cmap = 'bwr')
     res = plt.colorbar(img);
     ut.show_or_save(outname, show)
 
@@ -61,6 +63,9 @@ def contact_map(gro = ut.gro, xtc = ut.xtc, outname = ut.contact_map_out, sel = 
     plt.title("Contact map")
     img = plt.imshow(d_atoms_sel)
     plt.colorbar(img)
+
+
+
     ut.show_or_save(outname, show)
 
 def clustering(filename = ut.rmsd, outname = ut.clustering_out, linkage_method = 'average', show = False, skip_frames = 0):
